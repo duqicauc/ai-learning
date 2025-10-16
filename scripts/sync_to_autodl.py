@@ -291,8 +291,9 @@ class AutoDLSync:
         """从魔塔加载数据集"""
         try:
             import sys
-            reload(sys)
-            sys.setdefaultencoding('utf-8')
+            import codecs
+            sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+            sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
             from modelscope.msdatasets import MsDataset
             ds = MsDataset.load('tany0699/fruits100', split='train')
             # 保存到AutoDL数据目录
