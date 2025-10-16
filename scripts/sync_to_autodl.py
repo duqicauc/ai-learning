@@ -252,14 +252,23 @@ class AutoDLSync:
         try:
             remote_path = self.config['autodl']['remote_path']
             
-            # 创建tmux会话并启动训练
-            training_cmd = f"""
-            cd {remote_path} && 
-            tmux new-session -d -s training 
-            'source venv/bin/activate && 
-             export CUDA_VISIBLE_DEVICES=0 && 
-             python src/03_cnn/fruits_classifier.py --config configs/{config_name}.yaml'
-            """
+            # 检查Python环境和训练脚本
+            logger.info("检查训练环境...")
+            python_check = f"cd {remote_path} && python --version"
+            output, error = self.execute_remote_command(python_check)
+            logger.info(f"Python版本: {output.strip()}")
+            
+            # 检查训练脚本是否存在
+            script_check = f"cd {remote_path} && ls -la src/03_cnn/fruits_classifier.py"
+            output, error = self.execute_remote_command(script_check)
+            if error and "No such file" in error:
+                logger.error("训练脚本不存在，请检查代码同步")
+                return False
+            
+            # 启动训练（后台运行）
+            training_cmd = f"""cd {remote_path} && 
+                           export CUDA_VISIBLE_DEVICES=0 && 
+                           nohup python src/03_cnn/fruits_classifier.py --config configs/{config_name}.yaml > training.log 2>&1 &"""
             
             logger.info("启动训练...")
             output, error = self.execute_remote_command(training_cmd)
@@ -267,9 +276,17 @@ class AutoDLSync:
             if error:
                 logger.warning(f"训练启动警告: {error}")
             
-            logger.info("训练已在tmux会话中启动")
-            logger.info("提示: 使用 'tmux attach -t training' 查看训练进度")
-            return True
+            # 检查训练是否成功启动
+            check_cmd = f"cd {remote_path} && ps aux | grep fruits_classifier.py | grep -v grep"
+            output, error = self.execute_remote_command(check_cmd)
+            
+            if output.strip():
+                logger.info("✅ 训练已成功启动")
+                logger.info("提示: 训练日志保存在 training.log 文件中")
+                return True
+            else:
+                logger.warning("训练进程未找到，可能启动失败")
+                return False
             
         except Exception as e:
             logger.error(f"❌ 训练启动失败: {e}")
