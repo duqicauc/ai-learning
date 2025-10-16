@@ -173,7 +173,7 @@ class AutoDLSync:
             
             # 先提交本地更改
             if self.config['git'].get('auto_commit', True):
-                self.commit_changes()
+                self.git_operations()
             
             # 推送到远程仓库
             if self.config['git'].get('auto_push', True):
