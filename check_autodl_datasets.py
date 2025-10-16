@@ -23,6 +23,8 @@ try:
     
     # 检查AutoDL预置数据集
     commands = [
+        "ls -la /root/autodl-fs/",
+        "ls -la /root/autodl-fs/data/ 2>/dev/null || echo '没有autodl-fs/data目录'",
         "ls -la /root/autodl-tmp/",
         "ls -la /root/autodl-pub/",
         "find /root -name '*fruit*' -type d 2>/dev/null",

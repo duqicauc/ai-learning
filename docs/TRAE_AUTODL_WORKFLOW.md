@@ -135,7 +135,7 @@ training:
   device: "cuda"        # 强制使用GPU
   
 data:
-  dataset_path: "/root/data/fruits100"
+  dataset_path: "/root/autodl-fs/data/fruits100"  # 文件存储挂载目录
   num_workers: 8        # 多进程数据加载
   
 logging:

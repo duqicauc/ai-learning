@@ -23,12 +23,18 @@ try:
     
     # 检查AutoDL公共数据集
     commands = [
+        "ls -la /root/autodl-fs/ | grep -i fruit",
+        "find /root/autodl-fs -name '*fruit*' -type d 2>/dev/null",
+        "find /root/autodl-fs -name '*food*' -type d 2>/dev/null", 
+        "find /root/autodl-fs -name '*classification*' -type d 2>/dev/null",
+        "ls -la /root/autodl-fs/CIFAR* 2>/dev/null",
         "ls -la /autodl-pub/ | grep -i fruit",
         "find /autodl-pub -name '*fruit*' -type d 2>/dev/null",
         "find /autodl-pub -name '*food*' -type d 2>/dev/null",
         "find /autodl-pub -name '*classification*' -type d 2>/dev/null",
         "ls -la /autodl-pub/CIFAR* 2>/dev/null",
         "echo '检查ImageNet相关数据集...'",
+        "ls -la /root/autodl-fs/ImageNet* 2>/dev/null",
         "ls -la /autodl-pub/ImageNet* 2>/dev/null"
     ]
     
