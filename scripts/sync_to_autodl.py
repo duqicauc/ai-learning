@@ -265,6 +265,63 @@ class AutoDLSync:
             logger.error(f"依赖安装失败: {e}")
             return False
     
+    def download_dataset(self):
+        """下载fruits100数据集"""
+        try:
+            remote_path = self.config['autodl']['remote_path']
+            
+            # 检查数据集是否已存在
+            check_cmd = f"cd {remote_path} && ls -la data/fruits100"
+            output, error = self.execute_remote_command(check_cmd)
+            
+            if "No such file" not in error:
+                logger.info("数据集已存在，跳过下载")
+                return True
+            
+            logger.info("开始下载fruits100数据集...")
+            
+            # 方案1：使用ModelScope SDK下载
+            download_cmd = f"""
+            cd {remote_path} && 
+            pip3 install modelscope && 
+            python3 -c "
+import os
+from modelscope.msdatasets import MsDataset
+os.makedirs('data', exist_ok=True)
+try:
+    dataset = MsDataset.load('tany0699/fruits100', cache_dir='data', split='train')
+    print('✅ ModelScope SDK下载成功')
+except Exception as e:
+    print(f'ModelScope SDK下载失败: {{e}}')
+    # 备用方案：Git LFS
+    os.system('cd data && git lfs install')
+    os.system('cd data && GIT_LFS_SKIP_SMUDGE=1 git clone https://www.modelscope.cn/datasets/tany0699/fruits100.git')
+    os.system('cd data/fruits100 && git lfs fetch --include=\"*.jpg\" --include=\"*.png\" --include=\"*.jpeg\"')
+    os.system('cd data/fruits100 && git lfs checkout')
+    os.system('cd data/fruits100 && rm -rf .git')
+    print('✅ Git LFS下载完成')
+"
+            """
+            
+            output, error = self.execute_remote_command(download_cmd)
+            
+            if "✅" in output:
+                logger.info("数据集下载成功")
+                
+                # 验证数据集
+                verify_cmd = f"cd {remote_path} && find data/fruits100 -name '*.jpg' | wc -l"
+                count_output, _ = self.execute_remote_command(verify_cmd)
+                logger.info(f"数据集包含图片数量: {count_output.strip()}")
+                
+                return True
+            else:
+                logger.warning(f"数据集下载可能有问题: {output}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"数据集下载失败: {e}")
+            return False
+    
     def start_training(self, config_name="autodl"):
         """启动训练"""
         try:
@@ -362,7 +419,11 @@ class AutoDLSync:
         if not self.install_dependencies():
             return False
         
-        # 6. 启动训练
+        # 6. 下载数据集
+        if not self.download_dataset():
+            return False
+        
+        # 7. 启动训练
         if not self.start_training(config_name):
             return False
         
