@@ -294,6 +294,8 @@ class AutoDLSync:
             import codecs
             sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
             sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
+            import locale
+            locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
             from modelscope.msdatasets import MsDataset
             ds = MsDataset.load('tany0699/fruits100', split='train', encoding='utf-8')
             # 保存到AutoDL数据目录
