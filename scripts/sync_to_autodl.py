@@ -295,7 +295,7 @@ class AutoDLSync:
             sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
             sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
             from modelscope.msdatasets import MsDataset
-            ds = MsDataset.load('tany0699/fruits100', split='train')
+            ds = MsDataset.load('tany0699/fruits100', split='train', encoding='utf-8')
             # 保存到AutoDL数据目录
             save_path = "/root/ai-learning/data/fruits100"
             ds.save(save_path)
