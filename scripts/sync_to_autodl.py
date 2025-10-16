@@ -61,7 +61,7 @@ class AutoDLSync:
                     '__pycache__/',
                     '.git/',
                     'outputs/',
-                    'data/',
+    
                     '*.log',
                     '.vscode/',
                     '.idea/'

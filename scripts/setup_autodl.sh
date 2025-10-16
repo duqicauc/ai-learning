@@ -94,11 +94,15 @@ pip install --upgrade pip
 pip install -r requirements/autodl.txt
 log_success "Python依赖安装完成"
 
-# 9. 下载数据集（如果需要）
+# 9. 下载数据集（从AutoDL文件存储）
 log_info "准备数据集..."
 if [ ! -d "/root/data/fruits100" ]; then
-    log_warning "请手动下载fruits100数据集到 /root/data/fruits100"
-    log_info "或运行数据下载脚本: python scripts/download_datasets.py"
+    log_info "从AutoDL文件存储同步fruits100数据集..."
+    # 直接从AutoDL文件存储加载数据，无需本地同步
+ln -s /root/autodl-fs/fruits100/ /root/data/fruits100
+    log_success "数据集同步完成"
+else
+    log_info "数据集已存在，跳过同步"
 fi
 
 # 10. 创建必要的输出目录

@@ -4,7 +4,7 @@
 autodl:
   # AutoDL实例连接信息
   host: "connect.westc.gpuhub.com"  # 修正为正确的主机地址格式
-  port: 27024  # 使用配置中的实际端口
+  port: 41852  # 使用配置中的实际端口
   username: "root"
   key_file: "~/.ssh/id_rsa"  # SSH私钥路径
   remote_path: "/root/ai-learning"  # 远程项目路径
