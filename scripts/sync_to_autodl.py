@@ -280,27 +280,22 @@ class AutoDLSync:
             
             logger.info("开始下载fruits100数据集...")
             
-            # 方案1：使用ModelScope SDK下载
+            # 使用Git LFS下载数据集
             download_cmd = f"""
             cd {remote_path} && 
-            pip3 install modelscope && 
-            python3 -c "
-import os
-from modelscope.msdatasets import MsDataset
-os.makedirs('data', exist_ok=True)
-try:
-    dataset = MsDataset.load('tany0699/fruits100', cache_dir='data', split='train')
-    print('✅ ModelScope SDK下载成功')
-except Exception as e:
-    print(f'ModelScope SDK下载失败: {{e}}')
-    # 备用方案：Git LFS
-    os.system('cd data && git lfs install')
-    os.system('cd data && GIT_LFS_SKIP_SMUDGE=1 git clone https://www.modelscope.cn/datasets/tany0699/fruits100.git')
-    os.system('cd data/fruits100 && git lfs fetch --include=\"*.jpg\" --include=\"*.png\" --include=\"*.jpeg\"')
-    os.system('cd data/fruits100 && git lfs checkout')
-    os.system('cd data/fruits100 && rm -rf .git')
-    print('✅ Git LFS下载完成')
-"
+            mkdir -p data && 
+            cd data && 
+            apt-get update && apt-get install -y git-lfs && 
+            git lfs install && 
+            echo "开始克隆数据集..." && 
+            GIT_LFS_SKIP_SMUDGE=1 git clone https://www.modelscope.cn/datasets/tany0699/fruits100.git && 
+            cd fruits100 && 
+            echo "开始下载图片文件..." && 
+            git lfs fetch --include="*.jpg" --include="*.png" --include="*.jpeg" && 
+            git lfs checkout && 
+            echo "清理Git文件..." && 
+            rm -rf .git && 
+            echo "✅ 数据集下载完成"
             """
             
             output, error = self.execute_remote_command(download_cmd)
