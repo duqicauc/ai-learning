@@ -265,7 +265,41 @@ class AutoDLSync:
             logger.error(f"依赖安装失败: {e}")
             return False
     
-    def download_dataset(self):
+    def download_dataset(self, use_local=False):
+        """根据环境选择数据集加载方式"""
+        if use_local:
+            logger.info("使用本地少样本数据集")
+            return self._load_local_dataset()
+        else:
+            logger.info("从魔塔加载云端数据集")
+            return self._load_modelscope_dataset()
+
+    def _load_local_dataset(self):
+        """加载本地少样本数据集"""
+        local_path = "./data/local_fruits"
+        if not os.path.exists(local_path):
+            logger.error("本地数据集路径不存在: %s", local_path)
+            return False
+        # 验证本地数据集完整性
+        if len(os.listdir(local_path)) < 10:
+            logger.warning("本地数据集样本数不足")
+        logger.info("成功加载本地数据集")
+        return True
+
+    def _load_modelscope_dataset(self):
+        """从魔塔加载数据集"""
+        try:
+            from modelscope.msdatasets import MsDataset
+            ds = MsDataset.load('tany0699/fruits100', split='train')
+            # 保存到AutoDL数据目录
+            save_path = "/root/ai-learning/data/fruits100"
+            ds.save(save_path)
+            logger.info("成功加载魔塔数据集并保存到: %s", save_path)
+            return True
+        except Exception as e:
+            logger.error("魔塔数据集加载失败: %s", str(e))
+            return False
+
         """下载数据集 - 优先使用AutoDL预置数据集"""
         try:
             remote_path = self.config['autodl']['remote_path']
@@ -405,9 +439,15 @@ class AutoDLSync:
             logger.error(f"❌ 监控失败: {e}")
             return False
     
-    def full_sync_and_train(self, config_name="autodl"):
+    def full_sync_and_train(self, config_name="autodl", use_local=False):
         """完整的同步和训练流程"""
         logger.info("[INFO] 开始完整同步和训练流程...")
+        # ... 原有逻辑 ...
+        # 修改数据集下载调用
+        if not self.download_dataset(use_local):
+            logger.error("数据集加载失败，终止训练流程")
+            return False
+        # ... 原有逻辑 ...
         
         # 1. Git操作
         if not self.git_operations():
@@ -447,6 +487,7 @@ class AutoDLSync:
 
 def main():
     parser = argparse.ArgumentParser(description="AutoDL代码同步和训练工具")
+    parser.add_argument('--use-local', action='store_true', help='使用本地数据集进行训练')
     parser.add_argument('--config', default='configs/sync_config.yaml', 
                        help='同步配置文件路径')
     parser.add_argument('--training-config', default='autodl',
@@ -471,7 +512,7 @@ def main():
             syncer.connect_ssh()
             syncer.monitor_training()
         elif args.action == 'full':
-            syncer.full_sync_and_train(args.training_config)
+            syncer.full_sync_and_train(args.training_config, args.use_local)
     
     finally:
         syncer.close()
