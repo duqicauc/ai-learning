@@ -1,0 +1,31 @@
+# CIFAR-10 AutoDL训练配置
+model:
+  name: "cifar10_cnn"
+  architecture: "simple_cnn"
+  num_classes: 10
+  input_size: [32, 32, 3]
+
+dataset:
+  name: "cifar10"
+  path: "/root/ai-learning/data/cifar-10"
+  batch_size: 32
+  num_workers: 4
+  classes: ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
+
+training:
+  epochs: 10
+  learning_rate: 0.001
+  optimizer: "adam"
+  loss_function: "cross_entropy"
+  device: "cuda"
+  save_interval: 5
+
+paths:
+  model_save_dir: "/root/ai-learning/models"
+  log_dir: "/root/ai-learning/outputs/logs"
+  checkpoint_dir: "/root/ai-learning/outputs/checkpoints"
+
+logging:
+  level: "INFO"
+  save_logs: true
+  tensorboard: true
