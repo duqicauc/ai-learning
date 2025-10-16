@@ -152,29 +152,49 @@ class AutoDLSync:
             return False
     
     def sync_code(self):
-        # 确保远程目录存在
-        self.execute_remote_command(f"mkdir -p {self.config['autodl']['remote_path']}")
         """同步代码到AutoDL"""
         try:
+            # 确保远程目录存在
             remote_path = self.config['autodl']['remote_path']
+            self.execute_remote_command(f"mkdir -p {remote_path}")
             
             # 备份远程代码（如果启用）
-            if self.config['sync']['backup_before_sync']:
+            if self.config['sync'].get('backup_before_sync', False):
                 backup_cmd = f"cp -r {remote_path} {remote_path}_backup_$(date +%Y%m%d_%H%M%S)"
                 self.execute_remote_command(backup_cmd)
                 logger.info("远程代码备份完成")
             
-            # 初始化Git仓库（如果不存在）
-            self.execute_remote_command(f"cd {self.config['autodl']['remote_path']} && git init")
-            # 拉取最新代码
-            # 使用SCP同步本地代码到远程
-            scp_cmd = f"scp -P {self.config['autodl']['port']} -i {self.config['autodl']['key_file']} -r ./* {self.config['autodl']['username']}@{self.config['autodl']['host']}:{self.config['autodl']['remote_path']}"
-            subprocess.run(scp_cmd, shell=True, check=True)
+            # 获取排除模式
+            exclude_patterns = self.config['sync'].get('exclude_patterns', [])
+            logger.info(f"排除的文件模式: {exclude_patterns}")
+            
+            # 使用Git方式同步（推荐方式）
+            logger.info("使用Git方式同步代码...")
+            
+            # 先提交本地更改
+            if self.config['git'].get('auto_commit', True):
+                self.commit_changes()
+            
+            # 推送到远程仓库
+            if self.config['git'].get('auto_push', True):
+                push_result = subprocess.run(['git', 'push', 'origin', self.config['git']['branch']], 
+                                           capture_output=True, text=True)
+                if push_result.returncode != 0:
+                    logger.warning(f"Git推送警告: {push_result.stderr}")
+            
+            # 在远程服务器上拉取最新代码
+            pull_cmd = f"cd {remote_path} && git pull origin {self.config['git']['branch']}"
             output, error = self.execute_remote_command(pull_cmd)
             
             if error and "fatal" in error.lower():
-                logger.error(f"代码同步失败: {error}")
-                return False
+                # 如果Git拉取失败，尝试克隆
+                logger.info("Git拉取失败，尝试重新克隆...")
+                clone_cmd = f"rm -rf {remote_path} && git clone {self.config['git']['remote_url']} {remote_path}"
+                output, error = self.execute_remote_command(clone_cmd)
+                
+                if error and "fatal" in error.lower():
+                    logger.error(f"代码同步失败: {error}")
+                    return False
             
             logger.info("✅ 代码同步完成")
             return True
