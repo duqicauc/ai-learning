@@ -393,8 +393,8 @@ class AutoDLSync:
             # 启动训练（后台运行）
             training_cmd = f"""cd {remote_path} && 
                            export CUDA_VISIBLE_DEVICES=0 && 
-                           nohup python3 src/03_cnn/fruits_classifier.py --config configs/{config_name}.yaml > training.log 2>&1 &
-                           sleep 2 && tail -n 1 training.log"""
+                           nohup python3 src/03_cnn/fruits_classifier.py --config configs/{config_name}.yaml > {remote_path}/training.log 2>&1 &
+                           sleep 2 && tail -n 1 {remote_path}/training.log"""
             
             logger.info("启动训练...")
             output, error = self.execute_remote_command(training_cmd)
