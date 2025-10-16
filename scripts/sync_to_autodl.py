@@ -232,7 +232,8 @@ class AutoDLSync:
             install_python_cmd = """
             apt update && 
             apt install -y python3 python3-pip python3-venv git curl wget && 
-            python3 --version && 
+            update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && 
+            python --version && 
             pip3 --version
             """
             output, error = self.execute_remote_command(install_python_cmd)
@@ -289,6 +290,9 @@ class AutoDLSync:
     def _load_modelscope_dataset(self):
         """从魔塔加载数据集"""
         try:
+            import sys
+            reload(sys)
+            sys.setdefaultencoding('utf-8')
             from modelscope.msdatasets import MsDataset
             ds = MsDataset.load('tany0699/fruits100', split='train')
             # 保存到AutoDL数据目录
