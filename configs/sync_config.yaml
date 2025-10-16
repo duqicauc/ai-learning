@@ -1,0 +1,92 @@
+# AutoDL同步配置文件
+# 配置Trae到AutoDL的代码同步参数
+
+autodl:
+  # AutoDL实例连接信息
+  host: "connect.westc.gpuhub.com"  # 修正为正确的主机地址格式
+  port: 27024  # 使用配置中的实际端口
+  username: "root"
+  key_file: "~/.ssh/id_rsa"  # SSH私钥路径
+  remote_path: "/root/ai-learning"  # 远程项目路径
+
+git:
+  # Git自动化配置
+  auto_commit: true
+  commit_message_template: "sync: 同步代码到AutoDL {timestamp}"
+  auto_push: true
+  remote_url: "https://github.com/duqicauc/ai-learning.git"
+  branch: "main"
+
+sync:
+  # 同步策略配置
+  exclude_patterns:
+    - "*.pyc"
+    - "__pycache__/"
+    - ".git/"
+    - "outputs/"
+    - "data/"
+    - "*.log"
+    - ".vscode/"
+    - ".idea/"
+    - "*.tmp"
+    - "checkpoints/"
+    - "wandb/"
+  
+  include_configs: true
+  backup_before_sync: true
+  max_backup_count: 5
+
+training:
+  # 训练配置
+  default_config: "autodl"
+  tmux_session_name: "training"
+  auto_start: true
+  
+  # 环境变量
+  environment:
+    CUDA_VISIBLE_DEVICES: "0"
+    PYTHONPATH: "/root/ai-learning/src"
+    
+  # 监控配置
+  monitoring:
+    log_tail_lines: 20
+    check_interval: 30  # 秒
+    
+logging:
+  # 日志配置
+  level: "INFO"
+  file: "sync.log"
+  max_size: "10MB"
+  backup_count: 3
+
+notifications:
+  # 通知配置（可选）
+  enable: false
+  webhook_url: ""  # 钉钉/企业微信webhook
+  
+# 快速配置模板
+templates:
+  development:
+    # 开发环境快速同步
+    git:
+      auto_commit: false
+    sync:
+      backup_before_sync: false
+    training:
+      auto_start: false
+      
+  production:
+    # 生产环境完整流程
+    git:
+      auto_commit: true
+    sync:
+      backup_before_sync: true
+    training:
+      auto_start: true
+      
+  debug:
+    # 调试模式
+    logging:
+      level: "DEBUG"
+    training:
+      auto_start: false

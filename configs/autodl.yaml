@@ -1,0 +1,77 @@
+# AutoDL云端训练配置文件
+# 针对水果分类CNN项目优化
+
+# 训练配置
+training:
+  batch_size: 64              # AutoDL上使用更大批次
+  epochs: 100                 # 完整训练轮数
+  learning_rate: 0.001
+  weight_decay: 1e-4
+  device: "cuda"              # 强制使用GPU
+  mixed_precision: true       # 启用混合精度训练
+  gradient_accumulation: 2    # 梯度累积步数
+
+# 数据配置
+data:
+  dataset_path: "/root/data/fruits100"
+  num_workers: 8              # 多进程数据加载
+  pin_memory: true            # 固定内存加速
+  prefetch_factor: 2          # 预取因子
+  
+# 模型配置
+model:
+  num_classes: 100
+  dropout_rate: 0.5
+  save_dir: "/root/ai-learning/outputs/models"
+  checkpoint_interval: 5      # 每5轮保存检查点
+  save_best_only: true        # 只保存最佳模型
+
+# 优化器配置
+optimizer:
+  type: "Adam"
+  lr: 0.001
+  weight_decay: 1e-4
+  
+# 学习率调度
+scheduler:
+  type: "ReduceLROnPlateau"
+  mode: "min"
+  factor: 0.5
+  patience: 5
+  min_lr: 1e-6
+
+# 日志配置
+logging:
+  log_dir: "/root/ai-learning/outputs/logs"
+  log_level: "INFO"
+  save_interval: 1            # 每轮记录日志
+  tensorboard: true           # 启用TensorBoard
+  
+# 验证配置
+validation:
+  interval: 1                 # 每轮验证
+  metric: "accuracy"          # 主要评估指标
+  
+# 早停配置
+early_stopping:
+  enabled: true
+  patience: 10                # 10轮无改善则停止
+  min_delta: 0.001           # 最小改善阈值
+
+# 资源监控
+monitoring:
+  gpu_memory: true            # 监控GPU内存
+  system_resources: true     # 监控系统资源
+  log_interval: 100          # 每100个batch记录一次
+
+# AutoDL特定配置
+autodl:
+  instance_type: "RTX 4090D"    # 实例类型
+  auto_shutdown: true         # 训练完成自动关机
+  backup_interval: 1800       # 每30分钟备份一次
+  
+# 实验配置
+experiment:
+  name: "fruits_cnn_v1"
+  description: "水果分类CNN - 100类多分类任务"
+  tags: ["cnn", "classification", "fruits", "pytorch"]

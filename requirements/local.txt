@@ -1,0 +1,65 @@
+# 本地开发环境依赖
+# Trae IDE中使用的轻量级包
+
+# 深度学习框架（CPU版本）
+torch>=1.13.0
+torchvision>=0.14.0
+
+# 数据处理
+numpy>=1.21.0
+pandas>=1.3.0
+opencv-python>=4.5.0
+Pillow>=8.3.0
+albumentations>=1.3.0
+
+# 科学计算和可视化
+scipy>=1.7.0
+scikit-learn>=1.0.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# 配置管理
+PyYAML>=6.0
+python-dotenv>=0.21.0
+paramiko>=2.12.0
+
+# 开发工具
+jupyter>=1.0.0
+ipython>=7.30.0
+notebook>=6.4.0
+
+# 代码质量
+black>=22.0.0          # 代码格式化
+flake8>=4.0.0          # 代码检查
+isort>=5.10.0          # 导入排序
+mypy>=0.950            # 类型检查
+
+# 测试框架
+pytest>=7.0.0
+pytest-cov>=3.0.0     # 覆盖率测试
+pytest-mock>=3.7.0    # Mock测试
+
+# 文档生成
+sphinx>=4.5.0
+sphinx-rtd-theme>=1.0.0
+
+# 工具库
+tqdm>=4.62.0
+requests>=2.28.0
+
+# 本地调试
+pdbpp>=0.10.3          # 增强调试器
+ipdb>=0.13.0           # IPython调试器
+
+# 性能分析
+line-profiler>=3.5.0   # 行级性能分析
+memory-profiler>=0.60.0 # 内存分析
+
+# 数据可视化
+plotly>=5.10.0         # 交互式图表
+bokeh>=2.4.0           # Web可视化
+
+# 实用工具
+click>=8.0.0           # 命令行工具
+rich>=12.0.0           # 美化终端输出
+typer>=0.6.0           # 现代CLI框架
