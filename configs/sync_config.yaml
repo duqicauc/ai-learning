@@ -14,7 +14,7 @@ git:
   auto_commit: true
   commit_message_template: "sync: 同步代码到AutoDL {timestamp}"
   auto_push: true
-  remote_url: "https://github.com/duqicauc/ai-learning.git"
+  remote_url: "git@github.com:duqicauc/ai-learning.git"
   branch: "main"
 
 sync:
