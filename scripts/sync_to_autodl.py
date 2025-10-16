@@ -348,7 +348,7 @@ class AutoDLSync:
             mkdir -p train/apple train/banana train/orange && 
             mkdir -p val/apple val/banana val/orange && 
             echo "创建测试图片占位符..." && 
-            for i in {{1..10}}; do
+            for i in $(seq 1 10); do
                 touch train/apple/apple_$i.jpg
                 touch train/banana/banana_$i.jpg  
                 touch train/orange/orange_$i.jpg
