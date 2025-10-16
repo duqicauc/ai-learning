@@ -127,6 +127,7 @@ ai-learning/
 1. **基础概念** (`src/01_basics/`)
    - [ ] 张量操作和自动微分
    - [ ] 线性回归实现
+   - [ ] 神经网络回归 ([详细教程](docs/basics/README_neural_regression.md) | [项目总结](docs/basics/神经网络回归总结.md))
    - [ ] 鸢尾花分类
 
 2. **神经网络基础** (`src/02_neural_networks/`)
