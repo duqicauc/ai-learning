@@ -276,7 +276,7 @@ class AutoDLSync:
 
     def _load_local_dataset(self):
         """加载本地少样本数据集"""
-        local_path = "./data/local_fruits"
+        local_path = "./data/fruits100"
         if not os.path.exists(local_path):
             logger.error("本地数据集路径不存在: %s", local_path)
             return False
