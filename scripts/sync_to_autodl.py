@@ -227,24 +227,38 @@ class AutoDLSync:
         try:
             remote_path = self.config['autodl']['remote_path']
             
-            # 激活虚拟环境并安装依赖
-            install_cmd = f"""
-            cd {remote_path} && 
-            source venv/bin/activate && 
-            pip install -r requirements/autodl.txt
-            """
+            # 检查Python环境
+            logger.info("检查Python环境...")
+            python_check = f"cd {remote_path} && which python3 && python3 --version"
+            output, error = self.execute_remote_command(python_check)
+            logger.info(f"Python环境: {output.strip()}")
             
-            logger.info("📦 安装Python依赖...")
-            output, error = self.execute_remote_command(install_cmd)
+            # 检查pip
+            pip_check = f"cd {remote_path} && which pip3 && pip3 --version"
+            output, error = self.execute_remote_command(pip_check)
+            logger.info(f"Pip环境: {output.strip()}")
             
-            if error and "error" in error.lower():
-                logger.warning(f"依赖安装警告: {error}")
+            # 检查requirements文件是否存在
+            req_check = f"cd {remote_path} && ls -la requirements/"
+            output, error = self.execute_remote_command(req_check)
             
-            logger.info("✅ 依赖安装完成")
+            if "autodl.txt" in output:
+                # 安装依赖
+                install_cmd = f"cd {remote_path} && pip3 install -r requirements/autodl.txt"
+                logger.info("安装Python依赖...")
+                output, error = self.execute_remote_command(install_cmd)
+                
+                if error and "error" in error.lower():
+                    logger.warning(f"依赖安装警告: {error}")
+                else:
+                    logger.info("依赖安装完成")
+            else:
+                logger.warning("未找到requirements/autodl.txt文件")
+            
             return True
             
         except Exception as e:
-            logger.error(f"❌ 依赖安装失败: {e}")
+            logger.error(f"依赖安装失败: {e}")
             return False
     
     def start_training(self, config_name="autodl"):
@@ -254,7 +268,7 @@ class AutoDLSync:
             
             # 检查Python环境和训练脚本
             logger.info("检查训练环境...")
-            python_check = f"cd {remote_path} && python --version"
+            python_check = f"cd {remote_path} && python3 --version"
             output, error = self.execute_remote_command(python_check)
             logger.info(f"Python版本: {output.strip()}")
             
@@ -268,7 +282,7 @@ class AutoDLSync:
             # 启动训练（后台运行）
             training_cmd = f"""cd {remote_path} && 
                            export CUDA_VISIBLE_DEVICES=0 && 
-                           nohup python src/03_cnn/fruits_classifier.py --config configs/{config_name}.yaml > training.log 2>&1 &"""
+                           nohup python3 src/03_cnn/fruits_classifier.py --config configs/{config_name}.yaml > training.log 2>&1 &"""
             
             logger.info("启动训练...")
             output, error = self.execute_remote_command(training_cmd)
