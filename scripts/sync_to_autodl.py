@@ -272,8 +272,8 @@ class AutoDLSync:
             logger.info("使用本地少样本数据集")
             return self._load_local_dataset()
         else:
-            logger.info("从魔塔加载云端数据集")
-            return self._load_modelscope_dataset()
+            logger.info("临时跳过云端加载，使用本地数据集")
+            return self._load_local_dataset()
 
     def _load_local_dataset(self):
         """加载本地少样本数据集"""
