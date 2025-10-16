@@ -227,16 +227,20 @@ class AutoDLSync:
         try:
             remote_path = self.config['autodl']['remote_path']
             
-            # 检查Python环境
-            logger.info("检查Python环境...")
-            python_check = f"cd {remote_path} && which python3 && python3 --version"
-            output, error = self.execute_remote_command(python_check)
-            logger.info(f"Python环境: {output.strip()}")
+            # 首先安装Python和基础工具
+            logger.info("安装Python环境...")
+            install_python_cmd = """
+            apt update && 
+            apt install -y python3 python3-pip python3-venv git curl wget && 
+            python3 --version && 
+            pip3 --version
+            """
+            output, error = self.execute_remote_command(install_python_cmd)
             
-            # 检查pip
-            pip_check = f"cd {remote_path} && which pip3 && pip3 --version"
-            output, error = self.execute_remote_command(pip_check)
-            logger.info(f"Pip环境: {output.strip()}")
+            if "Python 3" in output:
+                logger.info("Python环境安装成功")
+            else:
+                logger.warning(f"Python安装可能有问题: {output}")
             
             # 检查requirements文件是否存在
             req_check = f"cd {remote_path} && ls -la requirements/"
