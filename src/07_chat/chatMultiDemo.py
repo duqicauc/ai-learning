@@ -1,6 +1,10 @@
 import httpx
 from openai import OpenAI
 import os
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 def test_multi_turn_chat():
     """多轮对话演示，支持连续对话和对话历史管理"""

@@ -1,6 +1,10 @@
 import httpx
 from openai import OpenAI
 import os
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 def test_simple_chat():
     """测试简单的聊天功能，包含SSL修复和错误处理"""

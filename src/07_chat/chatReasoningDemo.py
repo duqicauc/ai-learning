@@ -2,6 +2,11 @@ import ssl
 import httpx
 from openai import OpenAI
 import os
+import json
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 def create_ssl_context():
     """Create SSL context that bypasses certificate verification"""

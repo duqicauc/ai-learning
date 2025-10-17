@@ -3,6 +3,10 @@ from openai import OpenAI
 import tiktoken
 from typing import List, Dict
 import os
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 class AdvancedChatManager:
     """高级多轮对话管理器，支持token管理和对话精简"""
@@ -41,7 +45,7 @@ class AdvancedChatManager:
             print("   可以通过以下方式设置：")
             print("   1. 创建 .env 文件并添加: SILICONFLOW_API_KEY=your-api-key")
             print("   2. 或在命令行中设置: set SILICONFLOW_API_KEY=your-api-key")
-            return None
+            raise ValueError("SILICONFLOW_API_KEY environment variable is required")
         
         # 创建OpenAI客户端
         self.client = OpenAI(
@@ -234,7 +238,11 @@ class AdvancedChatManager:
 
 def test_advanced_multi_turn_chat():
     """高级多轮对话演示"""
-    chat_manager = AdvancedChatManager(max_tokens=2000, summarize_interval=3)  # 降低阈值便于演示
+    try:
+        chat_manager = AdvancedChatManager(max_tokens=2000, summarize_interval=3)  # 降低阈值便于演示
+    except ValueError as e:
+        print(f"❌ 初始化失败: {e}")
+        return
     
     try:
         print("🚀 高级多轮对话演示启动...")
@@ -335,7 +343,11 @@ def test_advanced_multi_turn_chat():
 def test_auto_compression():
     """自动压缩功能测试"""
     print("🧪 自动压缩功能测试...")
-    chat_manager = AdvancedChatManager(max_tokens=1000, summarize_interval=2)  # 更低的阈值
+    try:
+        chat_manager = AdvancedChatManager(max_tokens=1000, summarize_interval=2)  # 更低的阈值
+    except ValueError as e:
+        print(f"❌ 初始化失败: {e}")
+        return
     
     try:
         # 模拟多轮对话
