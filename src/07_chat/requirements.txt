@@ -1,0 +1,16 @@
+# AI Chat Demo Requirements
+# 基础依赖
+openai>=1.0.0
+httpx>=0.24.0
+python-dotenv>=1.0.0
+
+# 图像处理
+Pillow>=9.0.0
+requests>=2.28.0
+
+# SSL处理
+urllib3>=1.26.0
+
+# 可选：用于更好的终端体验
+colorama>=0.4.6
+rich>=13.0.0
