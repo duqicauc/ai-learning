@@ -84,6 +84,20 @@ AI Learning 是一个专为深度学习初学者和进阶者设计的实践项�
    python scripts/setup_environment.py
    ```
 
+5. **🔒 配置API密钥** (用于聊天功能)
+   ```bash
+   # 复制环境变量模板
+   copy .env .env.local
+   
+   # 编辑 .env.local 文件，填入你的API密钥
+   # SILICONFLOW_API_KEY=your-actual-api-key-here
+   ```
+   
+   > ⚠️ **安全提醒**: 
+   > - 从不在代码中硬编码API密钥
+   > - `.env` 文件已被添加到 `.gitignore`
+   > - 详细安全指南请查看 [API_SECURITY.md](docs/API_SECURITY.md)
+
 ### 快速体验
 
 ```bash

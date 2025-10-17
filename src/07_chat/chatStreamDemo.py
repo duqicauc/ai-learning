@@ -1,6 +1,7 @@
 import ssl
 import httpx
 from openai import OpenAI
+import os
 
 def create_ssl_context():
     """Create SSL context that bypasses certificate verification"""
@@ -9,19 +10,31 @@ def create_ssl_context():
     context.verify_mode = ssl.CERT_NONE
     return context
 
-def test_stream_chat():
-    """Test streaming chat with proper error handling"""
+def test_streaming_chat():
+    """测试流式对话功能"""
+    print("🌊 AI流式对话演示")
+    print("=" * 50)
+    
     try:
-        # Create HTTP client with SSL bypass
+        # 配置API密钥
+        api_key = os.getenv("SILICONFLOW_API_KEY")
+        if not api_key:
+            print("❌ 错误：请设置环境变量 SILICONFLOW_API_KEY")
+            print("   可以通过以下方式设置：")
+            print("   1. 创建 .env 文件并添加: SILICONFLOW_API_KEY=your-api-key")
+            print("   2. 或在命令行中设置: set SILICONFLOW_API_KEY=your-api-key")
+            return
+        
+        # 创建HTTP客户端，绕过SSL验证
         http_client = httpx.Client(
-            verify=False,  # Bypass SSL verification
-            timeout=30.0
+            verify=False,  # 跳过SSL验证
+            timeout=30.0   # 设置超时时间
         )
         
-        # Create OpenAI client with custom HTTP client
+        # 配置OpenAI客户端
         client = OpenAI(
             base_url="https://api.siliconflow.cn/v1",
-            api_key="sk-lohnuvviyzcltomzafjlnbghqzpjhlifyleenzrkfwxnlprd",
+            api_key=api_key,
             http_client=http_client
         )
         

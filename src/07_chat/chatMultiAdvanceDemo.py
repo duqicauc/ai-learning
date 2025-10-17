@@ -1,8 +1,8 @@
 import httpx
 from openai import OpenAI
 import tiktoken
-import json
 from typing import List, Dict
+import os
 
 class AdvancedChatManager:
     """高级多轮对话管理器，支持token管理和对话精简"""
@@ -34,10 +34,19 @@ class AdvancedChatManager:
             timeout=30.0
         )
         
+        # 配置API密钥
+        api_key = os.getenv("SILICONFLOW_API_KEY")
+        if not api_key:
+            print("❌ 错误：请设置环境变量 SILICONFLOW_API_KEY")
+            print("   可以通过以下方式设置：")
+            print("   1. 创建 .env 文件并添加: SILICONFLOW_API_KEY=your-api-key")
+            print("   2. 或在命令行中设置: set SILICONFLOW_API_KEY=your-api-key")
+            return None
+        
         # 创建OpenAI客户端
         self.client = OpenAI(
             base_url="https://api.siliconflow.cn/v1",
-            api_key="sk-lohnuvviyzcltomzafjlnbghqzpjhlifyleenzrkfwxnlprd",
+            api_key=api_key,
             http_client=self.http_client
         )
         

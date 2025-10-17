@@ -51,13 +51,19 @@ class AutoDLSync:
     
     def get_default_config(self) -> Dict[str, Any]:
         """获取默认配置"""
+        # 从环境变量获取敏感信息
+        autodl_password = os.getenv('AUTODL_PASSWORD')
+        if not autodl_password:
+            logger.warning("⚠️  未设置环境变量 AUTODL_PASSWORD，请设置后再使用")
+            autodl_password = 'YOUR_PASSWORD_HERE'  # 占位符
+        
         return {
             'autodl': {
-                'host': 'connect.westc.gpuhub.com',
-                'port': 41852,
-                'username': 'root',
-                'password': 'Flameaway3',
-                'remote_path': '/root/ai-learning',
+                'host': os.getenv('AUTODL_HOST', 'connect.westc.gpuhub.com'),
+                'port': int(os.getenv('AUTODL_PORT', '41852')),
+                'username': os.getenv('AUTODL_USERNAME', 'root'),
+                'password': autodl_password,
+                'remote_path': os.getenv('AUTODL_REMOTE_PATH', '/root/ai-learning'),
                 'local_path': '.',
                 'exclude_patterns': [
                     '.git/',

@@ -242,3 +242,14 @@ desktop.ini
 config.ini
 secrets.json
 .env.local
+
+# Secrets and sensitive data
+.env
+.env.production
+.env.development
+*.key
+*.pem
+*api_key*
+*secret*
+config/secrets.py
+config/api_keys.py

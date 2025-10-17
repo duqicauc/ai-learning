@@ -1,9 +1,19 @@
 import httpx
 from openai import OpenAI
+import os
 
 def test_simple_chat():
     """测试简单的聊天功能，包含SSL修复和错误处理"""
     try:
+        # 获取API密钥
+        api_key = os.getenv("SILICONFLOW_API_KEY")
+        if not api_key:
+            print("❌ 错误：请设置环境变量 SILICONFLOW_API_KEY")
+            print("   可以通过以下方式设置：")
+            print("   1. 创建 .env 文件并添加: SILICONFLOW_API_KEY=your-api-key")
+            print("   2. 或在命令行中设置: set SILICONFLOW_API_KEY=your-api-key")
+            return
+        
         # 创建HTTP客户端，绕过SSL验证
         http_client = httpx.Client(
             verify=False,  # 绕过SSL证书验证
@@ -13,7 +23,7 @@ def test_simple_chat():
         # 创建OpenAI客户端
         client = OpenAI(
             base_url="https://api.siliconflow.cn/v1",
-            api_key="sk-lohnuvviyzcltomzafjlnbghqzpjhlifyleenzrkfwxnlprd",
+            api_key=api_key,
             http_client=http_client
         )
         
